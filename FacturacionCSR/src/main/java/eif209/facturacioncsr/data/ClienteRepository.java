@@ -2,11 +2,13 @@ package eif209.facturacioncsr.data;
 import eif209.facturacioncsr.logic.Cliente;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-@Repository
+
+@Component("clienteRepository")
 public interface ClienteRepository extends CrudRepository<Cliente, Long> {
     @Query("select c from Cliente c where c.id = ?1")
     Optional<Cliente> findByClienteId(String clienteId);
@@ -18,7 +20,10 @@ public interface ClienteRepository extends CrudRepository<Cliente, Long> {
 
     @Override
     <S extends Cliente> S save(S entity);
+    
+    Cliente findClienteById(String id);
 
-    @Override
-    Optional<Cliente> findById(Long aLong);
+    List<Cliente> findByNombre(String nombre);
+
+    void delete(String cedula);
 }
