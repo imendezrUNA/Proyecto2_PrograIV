@@ -4,12 +4,23 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import java.util.Collection;
 import java.util.Objects;
 
 @Entity
 public class Usuario {
+    public Usuario(String nombreUsuario, String contrasena, Rol rol) {
+        this.nombreUsuario = nombreUsuario;
+        this.setContrasena(contrasena);
+        //this.estado = Estado.PENDIENTE; // Estado por defecto
+        this.rol = rol;
+    }
+
+    public Usuario() {
+
+    }
+
     public enum Estado {
         ACTIVO, INACTIVO, PENDIENTE;
     }
@@ -62,23 +73,25 @@ public class Usuario {
     }
 
     public void setContrasena(String contrasena) {
-        this.contrasena = contrasena;
+        this.contrasena = contrasena; // Descomentar en caso de querer usar PasswordUpdater.java
+        //var encoder = new BCryptPasswordEncoder(); // Comentar en caso de querer usar PasswordUpdater.java
+        //this.contrasena = "{bcrypt}"+encoder.encode(contrasena); // Comentar en caso de querer usar PasswordUpdater.java
     }
 
-    public Object getEstado() {
+    public Estado getEstado() {
         return estado;
     }
 
-    public void setEstado(Object estado) {
-        this.estado = (Estado) estado;
+    public void setEstado(Estado estado) {
+        this.estado = estado;
     }
 
-    public Object getRol() {
+    public Rol getRol() {
         return rol;
     }
 
-    public void setRol(Object rol) {
-        this.rol = (Rol) rol;
+    public void setRol(Rol rol) {
+        this.rol = rol;
     }
 
     @Override

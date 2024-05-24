@@ -23,7 +23,7 @@ public class Clientes {
     @GetMapping("/{cedula}")
     public Cliente read(@PathVariable String id) {
         try {
-            return clienteRepository.findClienteById(id);
+            return clienteRepository.findClienteById(Long.parseLong(id));
         } catch (Exception ex) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
@@ -44,7 +44,7 @@ public class Clientes {
     @DeleteMapping("/{cedula}")
     public void delete(@PathVariable String id) {
         try {
-            clienteRepository.delete(id);
+            clienteRepository.deleteById(Long.parseLong(id));
         } catch (Exception ex) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }

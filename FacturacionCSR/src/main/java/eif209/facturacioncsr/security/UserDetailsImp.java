@@ -1,41 +1,31 @@
 package eif209.facturacioncsr.security;
 
-import eif209.facturacioncsr.logic.User;
+import eif209.facturacioncsr.logic.Usuario;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
 
-public class UserDetailsImp implements UserDetails {
-
-    private User user;
-
-    public UserDetailsImp(User user) {
-        this.user = user;
-    }
-
-    public User getUser() {
-        return user;
-    }
+public record UserDetailsImp(Usuario usuario) implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(user.getRol()));
-        return authorities;
+        /*List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority(usuario.getRol().name()));
+        return authorities;*/
+        return Collections.singletonList(new SimpleGrantedAuthority(usuario.getRol().name()));
     }
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return usuario.getContrasena();
     }
 
     @Override
     public String getUsername() {
-        return user.getId();
+        return usuario.getNombreUsuario();
     }
 
     @Override
@@ -45,7 +35,7 @@ public class UserDetailsImp implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return usuario.getEstado() == Usuario.Estado.ACTIVO;
     }
 
     @Override
@@ -55,7 +45,7 @@ public class UserDetailsImp implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return usuario.getEstado() == Usuario.Estado.ACTIVO;
     }
 
 }

@@ -21,9 +21,9 @@ public interface ClienteRepository extends CrudRepository<Cliente, Long> {
     @Override
     <S extends Cliente> S save(S entity);
     
-    Cliente findClienteById(String id);
+    Cliente findClienteById(long id);
 
     List<Cliente> findByNombre(String nombre);
 
-    void delete(String cedula);
+    void deleteById(long id);
 }
