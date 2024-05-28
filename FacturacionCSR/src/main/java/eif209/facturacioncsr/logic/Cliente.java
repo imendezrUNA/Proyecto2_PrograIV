@@ -1,5 +1,8 @@
 package eif209.facturacioncsr.logic;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -9,6 +12,7 @@ import jakarta.validation.constraints.Size;
 import java.util.Collection;
 import java.util.Objects;
 
+@JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = LazyFieldsFilter.class)
 @Entity
 public class Cliente {
     @Id
@@ -34,6 +38,7 @@ public class Cliente {
     private Collection<Factura> facturasById;
     @ManyToOne
     @JoinColumn(name = "proveedorID", referencedColumnName = "ID", nullable = false)
+
     private Proveedor proveedor;
 
     public long getId() {
@@ -98,5 +103,9 @@ public class Cliente {
     }
     public void setProveedor(Proveedor proveedor) {
         this.proveedor = proveedor;
+    }
+
+    public Proveedor getProveedor() {
+        return proveedor;
     }
 }

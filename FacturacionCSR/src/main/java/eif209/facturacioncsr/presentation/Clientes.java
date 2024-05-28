@@ -2,11 +2,13 @@ package eif209.facturacioncsr.presentation;
 
 import eif209.facturacioncsr.data.ClienteRepository;
 import eif209.facturacioncsr.logic.Cliente;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Collection;
 import java.util.List;
 
 @RestController
@@ -15,19 +17,21 @@ public class Clientes {
     @Autowired
     ClienteRepository clienteRepository;
 
+
     @GetMapping
     public Iterable<Cliente> read() {
         return clienteRepository.findAll();
     }
 
-    @GetMapping("/{cedula}")
-    public Cliente read(@PathVariable String id) {
+    @GetMapping("/{id}")
+    public Collection<Cliente> read(@PathVariable long id) {
         try {
-            return clienteRepository.findClienteById(Long.parseLong(id));
+            return clienteRepository.findClienteByProveedorId(id);
         } catch (Exception ex) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }
+
 
     @GetMapping("/search")
     public List<Cliente> findByNombre(@RequestParam String nombre) {
@@ -39,14 +43,6 @@ public class Clientes {
             clienteRepository.save(cliente);
         } catch (Exception ex) {
             throw new ResponseStatusException(HttpStatus.CONFLICT);
-        }
-    }
-    @DeleteMapping("/{cedula}")
-    public void delete(@PathVariable String id) {
-        try {
-            clienteRepository.deleteById(Long.parseLong(id));
-        } catch (Exception ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }
 }

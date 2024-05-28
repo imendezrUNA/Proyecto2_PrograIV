@@ -112,7 +112,7 @@ public class Service {
         return clienteRepository.findByClienteId(clienteId);
     }
 
-    public Optional<Producto> productoRead(String ProductoId) {
+    public Optional<Producto> productoRead(int ProductoId) {
         return productoRepository.findByProductoById(ProductoId);
     }
 

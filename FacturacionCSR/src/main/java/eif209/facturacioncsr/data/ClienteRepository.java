@@ -26,4 +26,5 @@ public interface ClienteRepository extends CrudRepository<Cliente, Long> {
     List<Cliente> findByNombre(String nombre);
 
     void deleteById(long id);
+    List<Cliente> findByNombreAndProveedorId(String nombre, long proveedorId);
 }

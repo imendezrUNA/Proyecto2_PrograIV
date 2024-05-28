@@ -1,5 +1,7 @@
 package eif209.facturacioncsr.logic;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -9,6 +11,7 @@ import java.sql.Date;
 import java.util.Collection;
 import java.util.Objects;
 
+@JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = LazyFieldsFilter.class)
 @Entity
 public class Factura {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,6 +31,7 @@ public class Factura {
     private Proveedor proveedorByProveedorId;
     @ManyToOne
     @JoinColumn(name = "clienteID", referencedColumnName = "ID", nullable = false)
+    @JsonBackReference
     private Cliente clienteByClienteId;
 
     public int getId() {

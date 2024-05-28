@@ -1,5 +1,7 @@
 package eif209.facturacioncsr.logic;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -10,6 +12,7 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Objects;
 
+@JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = LazyFieldsFilter.class)
 @Entity
 public class Producto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
