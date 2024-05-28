@@ -1,15 +1,14 @@
 package eif209.facturacioncsr.presentation;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
 import eif209.facturacioncsr.logic.Usuario;
 import eif209.facturacioncsr.security.UserDetailsImp;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("/api/login")
@@ -36,8 +35,7 @@ public class Login {
     }
 
     @GetMapping("/current-user")
-    //@PreAuthorize("isAuthenticated()") // Asegura que el usuario esté autenticado
     public Usuario getCurrentUser(@AuthenticationPrincipal UserDetailsImp user) {
-        return new Usuario(user.usuario().getNombreUsuario(), null, user.usuario().getRol());
+        return new Usuario(user.getUsername(), null, user.usuario().getRol());
     }
 }

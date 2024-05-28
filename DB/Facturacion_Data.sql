@@ -1,11 +1,18 @@
 USE Facturacion;
 
 -- Insertar usuarios
-INSERT INTO Usuario (nombreUsuario, contrasena, estado, rol) VALUES
+/*INSERT INTO Usuario (nombreUsuario, contrasena, estado, rol) VALUES
 ('admin', 'password', 'ACTIVO', 'ADMINISTRADOR'),
 ('proveedor1', 'password', 'ACTIVO', 'PROVEEDOR'),
 ('proveedor2', 'password', 'INACTIVO', 'PROVEEDOR'),
-('proveedor3', 'password', 'PENDIENTE', 'PROVEEDOR');
+('proveedor3', 'password', 'PENDIENTE', 'PROVEEDOR');*/
+
+-- Insertar usuarios con la contraseña "password" encriptada
+INSERT INTO Usuario (nombreUsuario, contrasena, estado, rol) VALUES
+('admin', '{bcrypt}$2a$10$k2lv9mKrnclYn4OHco054eTt/iBavxIFy4iRxiIqquUwFdfix/S.K', 'ACTIVO', 'ADMINISTRADOR'),
+('proveedor1', '{bcrypt}$2a$10$VKqdek0YPdCFglv1/hGLN.0ejqDLn3ALNCs2HGniFxoNJU3.MGHRO', 'ACTIVO', 'PROVEEDOR'),
+('proveedor2', '{bcrypt}$2a$10$DTa4PSnNWCINIBMVS0y9/OUq26ywfDLQpeSqku.Jf9nKNdIzYiQHe', 'INACTIVO', 'PROVEEDOR'),
+('proveedor3', '{bcrypt}$2a$10$GF7CXwZzabkjR0AEFECvWOK3JlTyxbDhGVnhDSbzw/sK.WGonWiiu', 'PENDIENTE', 'PROVEEDOR');
 
 -- Insertar proveedores con sus respectivos usuarios
 INSERT INTO Proveedor (ID, usuarioID, nombre, correoElectronico, numeroTelefono, direccion) VALUES

@@ -1,25 +1,8 @@
-var backend = "http://localhost:8080/api";
-var api_login = backend + '/login';
-
-var loginstate = {
-    logged: false,
-    user: {id: "", rol: ""}
-};
-
-async function checkuser() {
-    let request = new Request(api_login + '/current-user', {method: 'GET'});
-    const response = await fetch(request);
-    if (response.ok) {
-        loginstate.logged = true;
-        loginstate.user = await response.json();
-    } else {
-        loginstate.logged = false;
-    }
-}
+// menu.js
 
 async function menu() {
     await checkuser();
-    if (!loginstate.logged && document.location.pathname !== "/pages/bienvenida/view.html") {
+    if (!loginstate.logged && document.location.pathname !== "/pages/bienvenida/view.html" && document.location.pathname !== "/pages/registro/view.html") {
         document.location = "/pages/bienvenida/view.html";
         throw new Error("Usuario no autorizado");
     }
@@ -36,15 +19,34 @@ function render_menu() {
             </div>
             <div>
                 <ul class="Menu">
-                    <li id="loginlink"><a href="#"> Login</a></li>
+        `;
+
+        if (document.location.pathname !== "/pages/registro/view.html") {
+            html += `<li id="loginlink"><a href="#"> Login</a></li>`;
+        }
+
+        html += `
+                    <li id="registerlink"><a href="#"> Registro</a></li>
                     <li id="bienvenidalink"><a href="#"> Bienvenida</a></li>
                 </ul>
             </div>
         `;
         document.querySelector('#menu').innerHTML = html;
-        document.querySelector("#menu #loginlink").addEventListener('click', ask);
-        render_loginoverlay();
-        render_loginview();
+
+        if (document.location.pathname !== "/pages/registro/view.html") {
+            document.querySelector("#menu #loginlink").addEventListener('click', ask);
+            render_loginoverlay();
+            render_loginview();
+        }
+
+        document.querySelector("#menu #registerlink").addEventListener('click', function (event) {
+            event.preventDefault();
+            document.location = "/pages/registro/view.html";
+        });
+        document.querySelector("#menu #bienvenidalink").addEventListener('click', function (event) {
+            event.preventDefault();
+            document.location = "/pages/bienvenida/view.html";
+        });
     } else {
         if (loginstate.user.rol === "PROVEEDOR") {
             html = `
@@ -58,11 +60,12 @@ function render_menu() {
                         <li id="facturaslink"><a href="#"> Facturas</a></li>
                         <li id="clienteslink"><a href="#"> Clientes</a></li>
                         <li id="productoslink"><a href="#"> Productos</a></li>
-                        <li id="perfillink"><a href="#"> Perfil</a></li>
+                        <li id="perfillink"><a href="#"><div class="usuario">
+                            <img id="usuario" src="/images/user.png" alt="Logo Usuario"> &nbsp &nbsp ${loginstate.user.nombreUsuario}
+                        </div></a></li>
                         <li id="logoutlink"><a href="#"> Logout</a></li>
                     </ul>
                 </div>
-                <div class="user">&nbsp &nbsp ${loginstate.user.id}</div>
             `;
         } else if (loginstate.user.rol === "ADMINISTRADOR") {
             html = `
@@ -76,7 +79,6 @@ function render_menu() {
                         <li id="logoutlink"><a href="#"> Logout</a></li>
                     </ul>
                 </div>
-                <div class="user">&nbsp &nbsp ${loginstate.user.id}</div>
             `;
         }
         document.querySelector('#menu').innerHTML = html;
@@ -158,61 +160,10 @@ function toggle_loginview() {
     document.getElementById("loginview").classList.toggle("active");
 }
 
-function login() {
-    let user = {
-        nombreUsuario: document.getElementById("id").value,
-        contrasena: document.getElementById("password").value
-    };
-    let request = new Request(api_login + '/login', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(user)
-    });
-    (async () => {
-        const response = await fetch(request);
-        if (!response.ok) {
-            errorMessage(response.status);
-            return;
-        }
-        loginstate.user = await response.json();
-        if (loginstate.user.rol === "PROVEEDOR") {
-            document.location = "/pages/facturar/view.html";
-        } else if (loginstate.user.rol === "ADMINISTRADOR") {
-            document.location = "/pages/proveedores/view.html";
-        }
-    })();
-}
-
-function logout(event) {
-    event.preventDefault();
-    let request = new Request(api_login + '/logout', {method: 'POST'});
-    (async () => {
-        const response = await fetch(request);
-        if (!response.ok) {
-            errorMessage(response.status);
-            return;
-        }
-        document.location = "/pages/bienvenida/view.html";
-    })();
-}
-
-function errorMessage(status) {
-    let error;
-    switch (status) {
-        case 404:
-            error = "Registro no encontrado";
-            break;
-        case 409:
-            error = "Registro duplicado";
-            break;
-        case 401:
-            error = "Usuario no autorizado";
-            break;
-        case 403:
-            error = "Usuario no tiene derechos";
-            break;
-        default:
-            error = "Error desconocido";
-    }
-    window.alert(error);
-}
+// Expose functions to the global scope
+window.menu = menu;
+window.render_menu = render_menu;
+window.render_loginoverlay = render_loginoverlay;
+window.render_loginview = render_loginview;
+window.ask = ask;
+window.toggle_loginview = toggle_loginview;

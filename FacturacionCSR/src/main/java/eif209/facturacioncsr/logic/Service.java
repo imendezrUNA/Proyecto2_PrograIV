@@ -1,40 +1,37 @@
 package eif209.facturacioncsr.logic;
 
-import eif209.facturacioncsr.data.ClienteRepository;
-import eif209.facturacioncsr.data.ProductoRepository;
-import eif209.facturacioncsr.data.ProveedorRepository;
-import eif209.facturacioncsr.data.UsuarioRepository;
-
 import eif209.facturacioncsr.data.*;
-//import eif209.facturacioncsr.dto.ProveedorRegistroDTO;
+import eif209.facturacioncsr.logic.dto.ProveedorRegistroDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
-
 
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
-
 import java.util.List;
 import java.util.Optional;
 
 @org.springframework.stereotype.Service("service")
 public class Service {
-    @Autowired
-    private UsuarioRepository usuarioRepository;
-    @Autowired
-    private ProveedorRepository proveedorRepository;
-    @Autowired
-    private ClienteRepository clienteRepository;
-    @Autowired
-    private ProductoRepository productoRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final ProveedorRepository proveedorRepository;
+    private final ClienteRepository clienteRepository;
+    private final ProductoRepository productoRepository;
+    private final FacturaRepository facturaRepository;
+    private final DetallefacturaRepository detallefacturaRepository;
 
     @Autowired
-    private FacturaRepository facturaRepository;
-    @Autowired
-    private DetallefacturaRepository detallefacturaRepository;
+    public Service(UsuarioRepository usuarioRepository, ProveedorRepository proveedorRepository, ClienteRepository clienteRepository, ProductoRepository productoRepository, FacturaRepository facturaRepository, DetallefacturaRepository detallefacturaRepository) {
+        this.usuarioRepository = usuarioRepository;
+        this.proveedorRepository = proveedorRepository;
+        this.clienteRepository = clienteRepository;
+        this.productoRepository = productoRepository;
+        this.facturaRepository = facturaRepository;
+        this.detallefacturaRepository = detallefacturaRepository;
+    }
 
-    /*@Transactional
+    @Transactional
     public boolean registrarProveedorYUsuario(ProveedorRegistroDTO registroDTO) {
         // Verificar si ya existe un usuario con el mismo username
         if (usuarioRepository.findByNombreUsuario(registroDTO.getNombreUsuario()).isPresent()) {
@@ -47,7 +44,8 @@ public class Service {
         // Crear el nuevo Usuario
         Usuario nuevoUsuario = new Usuario();
         nuevoUsuario.setNombreUsuario(registroDTO.getNombreUsuario());
-        nuevoUsuario.setContrasena(registroDTO.getContrasena()); // texto plano
+        var encoder = new BCryptPasswordEncoder();
+        nuevoUsuario.setContrasena("{bcrypt}" + encoder.encode(registroDTO.getContrasena()));
         nuevoUsuario.setEstado(Usuario.Estado.PENDIENTE);
         nuevoUsuario.setRol(Usuario.Rol.PROVEEDOR);
 
@@ -58,14 +56,14 @@ public class Service {
         nuevoProveedor.setCorreoElectronico(registroDTO.getCorreoElectronico());
         nuevoProveedor.setNumeroTelefono(registroDTO.getNumeroTelefono());
         nuevoProveedor.setDireccion(registroDTO.getDireccion());
-        nuevoProveedor.setUsuarioByUsuarioId(nuevoUsuario); // Asociar el usuario al proveedor
+        nuevoProveedor.setUsuarioByUsuarioId(nuevoUsuario);
 
         // Guardar las entidades en la db
         usuarioRepository.save(nuevoUsuario);
         proveedorRepository.save(nuevoProveedor);
 
         return true;
-    }*/
+    }
 
     @Transactional
     public boolean cambiarEstadoProveedor(Long proveedorId, Usuario.Estado nuevoEstado) {
@@ -97,7 +95,8 @@ public class Service {
     public Iterable<Producto> findProductByProveId(Long proveId) {
         return productoRepository.findProductoByProveedorId(proveId);
     }
-    public Iterable<Cliente> findClienteByProveedorId( Long proveId) {
+
+    public Iterable<Cliente> findClienteByProveedorId(Long proveId) {
         return clienteRepository.findClienteByProveedorId(proveId);
     }
 
@@ -108,6 +107,7 @@ public class Service {
     public Optional<Proveedor> proveedorRead(int usuarioId) {
         return proveedorRepository.findProveedorByUsuarioByUsuarioId_Id(usuarioId);
     }
+
     public Optional<Cliente> clienteRead(String clienteId) {
         return clienteRepository.findByClienteId(clienteId);
     }
@@ -116,8 +116,8 @@ public class Service {
         return productoRepository.findByProductoById(ProductoId);
     }
 
-    public Iterable<Proveedor> proveedorFindAll() {
-        return proveedorRepository.findAll();
+    public List<Proveedor> proveedorFindAll() {
+        return (List<Proveedor>) proveedorRepository.findAll();
     }
 
     public List<Proveedor> proveedorFindAllSortedByEstadoAsc() {
@@ -167,16 +167,16 @@ public class Service {
         return true;
     }
 
-    public List<Factura> facturasByProveedorId(Long provId){
-        return (List<Factura>)facturaRepository.findByProveedorByProveedorIdId(provId);
+    public List<Factura> facturasByProveedorId(Long provId) {
+        return (List<Factura>) facturaRepository.findByProveedorByProveedorIdId(provId);
     }
 
-    public void registrarFactura(Cliente cliente, Proveedor proveedor, List<Detallefactura> detallesFactura, BigDecimal total){
+    public void registrarFactura(Cliente cliente, Proveedor proveedor, List<Detallefactura> detallesFactura, BigDecimal total) {
 
         LocalDate localDate = LocalDate.now();
         Factura factura = new Factura();
         factura.setId(-1);
-        factura.setFecha( Date.valueOf(localDate));
+        factura.setFecha(Date.valueOf(localDate));
         factura.setTotal(total);
         factura.setClienteByClienteId(cliente);
         factura.setDetallefacturasById(detallesFactura);
@@ -184,19 +184,21 @@ public class Service {
         facturaRepository.save(factura);
         registrarDetallesFactura(detallesFactura);
     }
-    public Factura getByMaxId(){
+
+    public Factura getByMaxId() {
         return facturaRepository.findByMaxId();
     }
 
-    public void registrarDetallesFactura(List<Detallefactura> detallefacturas){
+    public void registrarDetallesFactura(List<Detallefactura> detallefacturas) {
         Factura factura = getByMaxId();
-        for (Detallefactura d: detallefacturas){
+        for (Detallefactura d : detallefacturas) {
             d.setFacturaByFacturaId(factura);
             d.setSubtotal(d.getSubtotal());
             detallefacturaRepository.save(d);
         }
     }
-    public Factura getFacturaById(int id){
+
+    public Factura getFacturaById(int id) {
         return facturaRepository.findById(id).get();
     }
 
@@ -205,11 +207,12 @@ public class Service {
         clienteRepository.save(clienteGuardar);
 
     }
-    public Optional<Cliente> clienteporID(long id){
+
+    public Optional<Cliente> clienteporID(long id) {
         return clienteRepository.findById(id);
     }
 
-    public List<Cliente> clientePorNombre(String clienteNom, Long idProovedor){
+    public List<Cliente> clientePorNombre(String clienteNom, Long idProovedor) {
         return (List<Cliente>) clienteRepository.findClientesContengan(clienteNom, idProovedor);
     }
 
