@@ -29,6 +29,8 @@ public class FacturacionCsrApplication {
                         .requestMatchers("/api/registro/register").permitAll()
                         .requestMatchers("/api/login/logout").authenticated()
                         .requestMatchers("api/facturar").permitAll()
+                        .requestMatchers("api/clientes").permitAll()
+                        .requestMatchers("api/productos").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/**").hasAnyAuthority("ADMINISTRADOR")
                         .requestMatchers("/api/**").hasAnyAuthority("ADMINISTRADOR", "PROVEEDOR")
                         //.requestMatchers("/api/login/current-user").authenticated() // Permitir el acceso al endpoint de usuario actual
