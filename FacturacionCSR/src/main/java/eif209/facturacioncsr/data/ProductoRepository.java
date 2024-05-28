@@ -23,5 +23,5 @@ public interface ProductoRepository extends CrudRepository<Producto, Integer> {
 
     List<Producto> findByNombre(String nombre);
 
-    Object findProductoById(int id);
+    Producto findProductoById(int id);
 }

@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.Collection;
 import java.util.Objects;
-
 @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = LazyFieldsFilter.class)
 @Entity
 public class Factura {

@@ -9,7 +9,6 @@ import jakarta.validation.constraints.Size;
 
 import java.util.Collection;
 import java.util.Objects;
-
 @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = LazyFieldsFilter.class)
 @Entity
 public class Proveedor {
