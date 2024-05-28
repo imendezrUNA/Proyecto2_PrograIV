@@ -11,7 +11,6 @@ import java.util.Optional;
 
 @Repository
 public interface ProveedorRepository extends CrudRepository<Proveedor, Long> {
-
     @Query("SELECT p FROM Proveedor p JOIN p.usuarioByUsuarioId u ORDER BY u.estado ASC")
     List<Proveedor> findAllByUsuarioEstadoOrderByEstadoAsc();
 

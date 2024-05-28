@@ -4,7 +4,7 @@ USE Facturacion;
 CREATE TABLE Usuario (
     ID INT AUTO_INCREMENT NOT NULL,
     nombreUsuario VARCHAR(50) NOT NULL UNIQUE,
-    contrasena VARCHAR(255) NOT NULL, -- Hash de contraseña (si se logra implementar xd)
+    contrasena VARCHAR(255) NOT NULL, -- Hash de contraseña
     estado ENUM('ACTIVO', 'INACTIVO', 'PENDIENTE') NOT NULL DEFAULT 'PENDIENTE',
     rol ENUM('ADMINISTRADOR', 'PROVEEDOR') NOT NULL,
     PRIMARY KEY (ID)

@@ -1,6 +1,7 @@
 package eif209.facturacioncsr.logic;
 
 import eif209.facturacioncsr.data.*;
+import eif209.facturacioncsr.logic.dto.ProveedorDTO;
 import eif209.facturacioncsr.logic.dto.ProveedorRegistroDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -9,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,6 +65,20 @@ public class Service {
         proveedorRepository.save(nuevoProveedor);
 
         return true;
+    }
+
+    public List<ProveedorDTO> getProveedoresDTO() {
+        List<Proveedor> proveedores = (List<Proveedor>) proveedorRepository.findAll();
+        List<ProveedorDTO> dtos = new ArrayList<>();
+        for (Proveedor proveedor : proveedores) {
+            ProveedorDTO dto = new ProveedorDTO();
+            dto.setId(proveedor.getId());
+            dto.setNombre(proveedor.getNombre());
+            dto.setCorreoElectronico(proveedor.getCorreoElectronico());
+            dto.setEstadoUsuario(proveedor.getUsuarioByUsuarioId().getEstado().toString());
+            dtos.add(dto);
+        }
+        return dtos;
     }
 
     @Transactional

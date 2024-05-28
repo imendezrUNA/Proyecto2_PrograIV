@@ -2,16 +2,32 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Facturacion</title>
+    <title>Listado de Proveedores</title>
     <link rel="stylesheet" type="text/css" href="/css/style.css">
     <link rel="stylesheet" type="text/css" href="/css/menu.css">
-    <script src="/js/menu.js"></script>
-    <script src="controller.js"></script>
 </head>
 <body>
 <header class="header" id="menu"></header>
-<div class='container'>
-    Desarrollar vista de proveedores.
+<div class="body">
+    <h2>Listado de Proveedores</h2>
+    <table class="proveedores">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Correo Electrónico</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody id="proveedores-lista">
+        <!-- Aquí se llenarán los datos de los proveedores -->
+        </tbody>
+    </table>
+    <div id="mensaje" class="mensaje"></div>
 </div>
+<script src="/js/login.js"></script>
+<script src="/js/menu.js"></script>
+<script src="controller.js"></script>
 </body>
 </html>

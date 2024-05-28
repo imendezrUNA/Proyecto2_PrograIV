@@ -27,6 +27,7 @@ public class FacturacionCsrApplication {
         http.authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/login/login").permitAll()
                         .requestMatchers("/api/registro/register").permitAll()
+                        .requestMatchers("/api/perfil/update").permitAll()
                         .requestMatchers("/api/login/logout").authenticated()
                         .requestMatchers("api/facturar").permitAll()
                         .requestMatchers("api/clientes").permitAll()

@@ -1,6 +1,9 @@
 package eif209.facturacioncsr.logic;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -9,8 +12,10 @@ import jakarta.validation.constraints.Size;
 
 import java.util.Collection;
 import java.util.Objects;
-@JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = LazyFieldsFilter.class)
+
 @Entity
+@JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = LazyFieldsFilter.class)
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Proveedor {
     @Id
     @Column(name = "ID")
@@ -35,7 +40,8 @@ public class Proveedor {
     private Collection<Factura> facturasById;
     @OneToMany(mappedBy = "proveedor", fetch = FetchType.LAZY)
     private Collection<Producto> productosById;
-    @OneToOne(fetch = FetchType.LAZY)
+    //@OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "usuarioID", referencedColumnName = "ID", nullable = false)
     private Usuario usuarioByUsuarioId;
 
@@ -108,6 +114,9 @@ public class Proveedor {
         this.productosById = productosById;
     }
 
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "usuarioID", referencedColumnName = "ID", nullable = false)
+    @JsonBackReference
     public Usuario getUsuarioByUsuarioId() {
         return usuarioByUsuarioId;
     }

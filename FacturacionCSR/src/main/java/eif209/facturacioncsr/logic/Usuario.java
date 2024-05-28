@@ -13,7 +13,7 @@ import java.util.Objects;
 
 @Entity
 @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = LazyFieldsFilter.class)
-//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Usuario {
     public Usuario(int id, String nombreUsuario, String contrasena, Rol rol) {
         this.id = id;
@@ -118,6 +118,8 @@ public class Usuario {
         return Objects.hash(id, nombreUsuario, contrasena, estado, rol);
     }
 
+    @OneToOne(mappedBy = "usuarioByUsuarioId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     public Proveedor getProveedor() {
         return proveedor;
     }
