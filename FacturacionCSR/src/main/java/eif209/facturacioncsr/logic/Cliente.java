@@ -28,7 +28,6 @@ public class Cliente {
     @Column(name = "correoElectronico", nullable = false)
     private String correoElectronico;
     @NotBlank(message = "El número de teléfono no puede estar en blanco")
-    @Pattern(regexp = "^(\\+506)?[2-8]\\d{7}$", message = "El número de teléfono debe tener el formato correcto")
     @Column(name = "numeroTelefono", nullable = false)
     private String numeroTelefono;
     @Size(max = 255, message = "La dirección no puede tener más de 255 caracteres")
@@ -108,4 +107,5 @@ public class Cliente {
     public Proveedor getProveedor() {
         return proveedor;
     }
+
 }

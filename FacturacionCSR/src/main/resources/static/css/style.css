@@ -1,3 +1,13 @@
+.usuario {
+    display: flex;
+    align-items: center;
+}
+
+#usuario {
+    height: 25px;
+    margin-right: 5px;
+}
+
 .logo img{
     border-radius: 50%;
     margin-top: 10px;

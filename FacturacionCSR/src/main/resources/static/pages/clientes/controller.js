@@ -79,7 +79,13 @@ function render_item() {
 }
 
 function save() {
+
+    if (!loginstate.logged){
+        return;
+    }
+
     load_item();
+
     if (!validate_item()) return;
 
     let method = state.mode === "EDIT" ? 'PUT' : 'POST';
@@ -112,11 +118,12 @@ function save() {
 }
 function load_item() {
     state.item = {
-        id: document.getElementById("id").value,
+        id: parseInt(document.getElementById("id").value),
         nombre: document.getElementById("nombre").value,
         correoElectronico: document.getElementById("correo").value,
-        numeroTelefono: document.getElementById("numTelefono").value,
-        direccion: document.getElementById("direccion").value
+        numeroTelefono: parseInt(document.getElementById("numTelefono").value),
+        direccion: document.getElementById("direccion").value,
+        proveedorId: loginstate.user.id
     };
 }
 
