@@ -49,7 +49,7 @@ public class Usuario {
     @Column(name = "nombreUsuario", unique = true, nullable = false)
     private String nombreUsuario;
     @NotBlank(message = "La contraseña no puede estar en blanco")
-    @Size(min = 8, message = "La contraseña debe tener al menos 8 caracteres")
+    @Size(min = 3, message = "La contraseña debe tener al menos 3 caracteres")
     @Column(name = "contrasena", nullable = false)
     private String contrasena;
     @NotNull(message = "El estado no puede ser nulo")
