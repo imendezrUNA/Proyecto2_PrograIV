@@ -1,11 +1,9 @@
-// login.js
-
 var backend = "http://localhost:8080/api";
 var api_login = backend + '/login';
 
 var loginstate = {
     logged: false,
-    user: {id: "", rol: ""}
+    user: { id: "", rol: "" }
 };
 
 async function checkuser() {
@@ -16,7 +14,7 @@ async function checkuser() {
         loginstate.user = await response.json();
     } else {
         loginstate.logged = false;
-        loginstate.user = {};
+        loginstate.user = { id: "", rol: "" };
     }
 }
 
@@ -27,7 +25,7 @@ async function login() {
     };
     let request = new Request(api_login + '/login', {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(user)
     });
     const response = await fetch(request);
@@ -36,6 +34,7 @@ async function login() {
         return;
     }
     loginstate.user = await response.json();
+    loginstate.logged = true; // Establecer estado logged a true después del login exitoso
     if (loginstate.user.rol === "PROVEEDOR") {
         document.location = "/pages/facturar/view.html";
     } else if (loginstate.user.rol === "ADMINISTRADOR") {
@@ -45,13 +44,15 @@ async function login() {
 
 function logout(event) {
     event.preventDefault();
-    let request = new Request(api_login + '/logout', {method: 'POST'});
+    let request = new Request(api_login + '/logout', { method: 'POST' });
     (async () => {
         const response = await fetch(request);
         if (!response.ok) {
             errorMessage(response.status);
             return;
         }
+        loginstate.logged = false;
+        loginstate.user = { id: "", rol: "" }; // Restablecer el estado del usuario en el logout
         document.location = "/pages/bienvenida/view.html";
     })();
 }

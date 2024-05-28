@@ -22,7 +22,7 @@ public class Login {
         }
         Authentication auth = (Authentication) request.getUserPrincipal();
         Usuario usuario = ((UserDetailsImp) auth.getPrincipal()).usuario();
-        return new Usuario(usuario.getNombreUsuario(), null, usuario.getRol());
+        return new Usuario(usuario.getId(), usuario.getNombreUsuario(), null, usuario.getRol()); // Asegúrate de devolver el ID
     }
 
     @PostMapping("/logout")
@@ -36,6 +36,6 @@ public class Login {
 
     @GetMapping("/current-user")
     public Usuario getCurrentUser(@AuthenticationPrincipal UserDetailsImp user) {
-        return new Usuario(user.getUsername(), null, user.usuario().getRol());
+        return new Usuario(user.usuario().getId(), user.getUsername(), null, user.usuario().getRol()); // Asegúrate de devolver el ID
     }
 }
