@@ -11,6 +11,17 @@
     width: 50%;
 }
 
+.usuario {
+    display: flex;
+    align-items: center;
+}
+
+#usuario {
+    height: 25px;
+    margin-right: 5px;
+}
+
+
 .header{
     background-color: #ffeee6 ;
     font-weight: bold;
@@ -207,3 +218,113 @@ input.invalid {box-shadow: 0 0 2px 2px red;}
     top: 20%;
     visibility: visible;
 }
+
+.centrado{
+    padding-left: 46%;
+    font-size: x-large;
+}
+
+
+#facturar {
+    margin: auto;
+    max-width: 53%;
+    display: flex;
+}
+#facturar > div {
+    width: 100% ;
+}
+#facturar > div >div{
+    border: solid seagreen 1px ;
+}
+#facturar > div >div:hover{
+    background: white;
+}
+
+#facturar  h1{
+    margin-left: 10%;
+    display: inline-block;
+}
+
+#facturar h2, #facturar p{
+    display: inline-block;
+    font-size: large;
+}
+
+#facturar h2{
+    color: mediumseagreen;
+    display: inline-block;
+}
+#facturar input[type="text"]{
+    width: 150px;
+
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid gainsboro;
+    border-radius: 4px;
+    box-sizing: border-box;
+    display: inline-block;
+}
+.total{
+    text-align: right;
+    color: mediumseagreen;
+    padding-right: 5%;
+}
+
+.productos p:first-child, .productos div:first-child{
+    padding-left: 1%;
+    min-width: 10%;
+    max-width: 10%;
+}
+.productos p:nth-child(2){
+    padding-left: 1%;
+    width: 10%;
+}
+.productos p:nth-child(3){
+    padding-left: 1%;
+    width: 30%;
+    display: inline-block;
+}
+.productos p:nth-child(4){
+    padding-left: 1%;
+    width: 13%;
+    display: inline-block;
+}
+.productos p:nth-child(5){
+    padding-left: 1%;
+    width: 15%;
+    display: inline-block;
+}
+.productos p:last-child{
+    padding-left: 1%;
+    width: 10%;
+    padding-right: 1%;
+    display: inline-block;
+}
+#facturar button[type="submit"]{
+    width: 30px;
+    display: inline-block;
+}
+
+#divTabla{
+    max-height: 300px;
+    overflow: auto;
+    margin-left: 30%;
+    margin-top: 1%;
+    width: 45%;
+}
+#tablaFacturas{
+    width: 100%;
+    border: solid seagreen 1px;
+}
+table#tablaFacturas tr{
+    padding-bottom: 10px;
+    padding-top: 10px;
+}
+table#tablaFacturas tr:nth-child(even){
+    background: #8fff8f;
+}
+table#tablaFacturas tr:nth-child(odd){
+    background: #cfffd4;
+}
+
+

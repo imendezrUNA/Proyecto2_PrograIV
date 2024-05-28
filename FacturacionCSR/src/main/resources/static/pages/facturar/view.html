@@ -7,11 +7,54 @@
     <link rel="stylesheet" type="text/css" href="/css/menu.css">
     <script src="/js/menu.js"></script>
     <script src="controller.js"></script>
+    <script src="../../js/login.js"></script>
 </head>
 <body>
 <header class="header" id="menu"></header>
-<div class='container'>
-    Desarrollar vista de facturar.
+<div class="container">
+    <h2 class="centrado">Facturar</h2>
+    <section id="facturar">
+        <div style="display: block;">
+            <div>
+                <div>
+                    <h1>Proveedor:</h1>
+                    <h2 id="proovedor"></h2>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <h1>Cliente: </h1>
+                    <h2 id="cliente"></h2>
+                    <input type="text" id="idCliente" name="idCliente" placeholder="identificacion">
+                    <button  id="buscarCliente">✔</button>
+                </div>
+            </div>
+            <div class="productos">
+                <p>Menos</p>
+                <p>Cant.</p>
+                <p>Descripción</p>
+                <p>Precio</p>
+                <p>Monto</p>
+                <p>Más</p>
+            </div>
+            <div>
+                <h1 id="codigo">Código</h1>
+                <input type="text" id="producto" name="codigoProducto">
+                <button id="codigoProducto">✔</button>
+            </div>
+
+            <div id="productos">
+
+            </div >
+            <div class="total">
+                <p>Total:</p>
+                <p id="total"> </p>
+            </div>
+        </div>
+    </section>
+    <div class="centrado">
+        <button id="guardar">Guardar</button>
+    </div>
 </div>
 </body>
 </html>
