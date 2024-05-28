@@ -1,19 +1,30 @@
 package eif209.facturacioncsr.logic;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Objects;
 
 @Entity
+@JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = LazyFieldsFilter.class)
+//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Usuario {
+    public Usuario(int id, String nombreUsuario, String contrasena, Rol rol) {
+        this.id = id;
+        this.nombreUsuario = nombreUsuario;
+        this.setContrasena(contrasena);
+        this.rol = rol;
+    }
+
     public Usuario(String nombreUsuario, String contrasena, Rol rol) {
         this.nombreUsuario = nombreUsuario;
         this.setContrasena(contrasena);
-        //this.estado = Estado.PENDIENTE; // Estado por defecto
         this.rol = rol;
     }
 
@@ -49,7 +60,9 @@ public class Usuario {
     @Column(name = "rol", nullable = false)
     @Enumerated(EnumType.STRING)
     private Rol rol;
+    //@JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = LazyFieldsFilter.class)
     @OneToOne(mappedBy = "usuarioByUsuarioId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    //@JsonManagedReference
     private Proveedor proveedor;
 
     public int getId() {
@@ -73,9 +86,7 @@ public class Usuario {
     }
 
     public void setContrasena(String contrasena) {
-        this.contrasena = contrasena; // Descomentar en caso de querer usar PasswordUpdater.java
-        //var encoder = new BCryptPasswordEncoder(); // Comentar en caso de querer usar PasswordUpdater.java
-        //this.contrasena = "{bcrypt}"+encoder.encode(contrasena); // Comentar en caso de querer usar PasswordUpdater.java
+        this.contrasena = contrasena;
     }
 
     public Estado getEstado() {
