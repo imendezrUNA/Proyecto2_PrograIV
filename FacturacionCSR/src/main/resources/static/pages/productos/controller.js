@@ -75,11 +75,19 @@ function render_item() {
 }
 
 function save() {
+
+    if (!loginstate.logged){
+        return;
+    }
+
     load_item();
+
     if (!validate_item()) return;
 
-    let method = state.mode === "ADD" ? 'POST' : 'PUT';
-    let url = state.mode === "ADD" ? api : `${api}/${state.item.id}`;
+    let method = state.mode === "EDIT" ? 'PUT' : 'POST';
+    let url = state.mode === "EDIT" ? `${api}/${state.item.id}` : api;
+
+    console.log('Saving item:', state.item); // Depuración: Ver los datos antes de enviarlos
 
     let request = new Request(url, {
         method: method,
@@ -88,10 +96,20 @@ function save() {
     });
 
     (async () => {
-        const response = await fetch(request);
-        if (!response.ok) { errorMessage(response.status); return; }
-        toggle_itemview();
-        fetchAndList();
+        try {
+            const response = await fetch(request);
+            if (!response.ok) {
+                let errorMessage = `Error: ${response.status} ${response.statusText}`;
+                console.error('There has been a problem with your fetch operation:', errorMessage);
+                const errorText = await response.text();
+                console.error('Error details:', errorText);
+                throw new Error(errorMessage);
+            }
+            toggle_itemview();
+            fetchAndList();
+        } catch (error) {
+            console.error('Fetch error:', error);
+        }
     })();
 }
 
@@ -100,7 +118,8 @@ function load_item() {
         id: document.getElementById("id").value,
         nombre: document.getElementById("nombre").value,
         descripcion: document.getElementById("descripcion").value,
-        precio: document.getElementById("precio").value
+        precio: document.getElementById("precio").value,
+        proveedorId: loginstate.user.id
     };
 }
 

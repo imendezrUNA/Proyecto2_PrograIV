@@ -1,7 +1,10 @@
 package eif209.facturacioncsr.presentation;
 
 import eif209.facturacioncsr.data.ProductoRepository;
+import eif209.facturacioncsr.data.ProveedorRepository;
 import eif209.facturacioncsr.logic.Producto;
+import eif209.facturacioncsr.logic.Proveedor;
+import eif209.facturacioncsr.logic.dto.ProductoResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +18,8 @@ import java.util.Optional;
 public class Productos {
     @Autowired
     private ProductoRepository productoRepository;
+    @Autowired
+    ProveedorRepository proveedorRepository;
 
     @GetMapping
     public List<Producto> read() {
@@ -33,11 +38,20 @@ public class Productos {
     }
 
     @PostMapping
-    public void create(@RequestBody Producto producto) {
+    public void create(@RequestBody ProductoResponseDTO productoDTO) {
         try {
+            Optional<Proveedor> proveedor = proveedorRepository.findProveedorByUsuarioByUsuarioId_Id(productoDTO.getProveedorId());
+            Producto producto = new Producto();
+            producto.setId((int) productoDTO.getId());
+            producto.setNombre(productoDTO.getNombre());
+            producto.setDescripcion(productoDTO.getDescripcion());
+            producto.setPrecio(productoDTO.getPrecio());
+            producto.setProveedor(proveedor.get());
             productoRepository.save(producto);
+        } catch (ResponseStatusException e) {
+            throw e;
         } catch (Exception ex) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Conflicto al crear el producto");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error interno del servidor");
         }
     }
 
