@@ -30,7 +30,6 @@ public class Factura {
     private Proveedor proveedorByProveedorId;
     @ManyToOne
     @JoinColumn(name = "clienteID", referencedColumnName = "ID", nullable = false)
-    @JsonBackReference
     private Cliente clienteByClienteId;
 
     public int getId() {

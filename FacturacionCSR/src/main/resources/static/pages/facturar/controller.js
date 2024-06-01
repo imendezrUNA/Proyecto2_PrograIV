@@ -119,5 +119,6 @@ function add(){
         const response = await fetch(request);
         if (!response.ok) {errorMessage(response.status);return;}
         location.reload();
+        alert("La factura se ha guardado correctamente.");
     })();
 }

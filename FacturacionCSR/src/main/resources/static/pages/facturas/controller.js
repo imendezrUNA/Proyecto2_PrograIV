@@ -55,8 +55,8 @@ function render_list_item(listado,item){
                 <td>  ${item.fecha} </td>
                 <td> ${item.total}  </td>
                 <td> ${item.clienteByClienteId.nombre} </td>
-                <td> <a href="/api/facturas/${item.id}/pdf" target="_blank"><img src="/images/pdf.png" style="width: 30px"> </a>  </td>
-                 <td> <img id="xml" src="/images/xml.png" style="width: 30px"> </td>`;
+                <td> <a href="http://localhost:8080/api/facturas/${item.id}/pdf" target="_blank"><img src="/images/pdf.png" style="width: 30px"> </a>  </td>
+                <td> <img id="xml" src="/images/xml.png" style="width: 30px"> </td>`;
 
     tr.querySelector("#xml").addEventListener("click",()=>{render_xml(item);});
     listado.append(tr);

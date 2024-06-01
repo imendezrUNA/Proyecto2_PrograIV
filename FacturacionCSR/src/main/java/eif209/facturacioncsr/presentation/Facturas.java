@@ -6,6 +6,7 @@ import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
+import eif209.facturacioncsr.data.DetallefacturaRepository;
 import eif209.facturacioncsr.data.FacturaRepository;
 import eif209.facturacioncsr.data.ProveedorRepository;
 import eif209.facturacioncsr.logic.Detallefactura;
@@ -26,6 +27,8 @@ public class Facturas {
     FacturaRepository facturaRepository;
     @Autowired
     ProveedorRepository proveedorRepository;
+    @Autowired
+    DetallefacturaRepository detallefacturaRepository;
     @GetMapping
     public List<Factura> read(@RequestParam String id){
         return (List<Factura>) facturaRepository.findByProveedorByProveedorIdId(Long.valueOf(id));
@@ -42,6 +45,7 @@ public class Facturas {
         try {
             response.addHeader("Content-type", "application/pdf");
             Factura factura = facturaRepository.findById(id).get();
+            List<Detallefactura> detallefacturas = (List<Detallefactura>) detallefacturaRepository.findByFacturaByFacturaIdId(factura.getId());
 
             PdfWriter writer = new PdfWriter(response.getOutputStream());
 
@@ -74,7 +78,7 @@ public class Facturas {
             table2.addCell("Precio");
             table2.addCell("Subtotal");
 
-            for (Detallefactura d : factura.getDetallefacturasById()) {
+            for (Detallefactura d : detallefacturas) {
 
                 table2.addCell(String.valueOf(d.getProductoByProductoId().getId()));
                 table2.addCell(d.getProductoByProductoId().getNombre());
@@ -93,8 +97,6 @@ public class Facturas {
         }catch (Exception ex){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-
-
     }
 
 

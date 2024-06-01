@@ -15,7 +15,7 @@ import java.util.Objects;
 
 @Entity
 @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = LazyFieldsFilter.class)
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+/*@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")*/
 public class Proveedor {
     @Id
     @Column(name = "ID")
