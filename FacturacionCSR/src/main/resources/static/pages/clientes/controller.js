@@ -1,6 +1,5 @@
 var backend = 'http://localhost:8080/api';
 var api = backend + '/clientes';
-var cliente;
 
 var state = {
     list: [],
@@ -21,15 +20,17 @@ async function loaded(event) {
 
     document.querySelector("#modalCliente .btn-primary").addEventListener("click", save);
 
-
     fetchAndList();
 }
 
 function fetchAndList() {
-    const request = new Request(api, {method: 'GET', headers: { }});
-    (async ()=>{
+    const request = new Request(api, { method: 'GET', headers: {} });
+    (async () => {
         const response = await fetch(request);
-        if (!response.ok) {errorMessage(response.status);return;}
+        if (!response.ok) {
+            errorMessage(response.status);
+            return;
+        }
         state.list = await response.json();
         render_list();
     })();
@@ -49,21 +50,19 @@ function render_list_item(listado, item) {
                     <td>${item.numeroTelefono}</td>
                     <td>${item.direccion}</td>
                     <td class='text-center'>
-                        <button id="editar" class='btn btn-warning btn-sm edit' data-id='${item.id}'>Editar</button>
+                        <button class='btn btn-warning btn-sm edit' data-id='${item.id}' data-bs-toggle="modal" data-bs-target="#modalCliente">Editar</button>
                     </td>`;
-    tr.querySelector(".edit").addEventListener("click", () => { edit(item.id); });
+    tr.querySelector(".edit").addEventListener("click", () => {
+        edit(item.id);
+    });
     listado.append(tr);
 }
 
-function ask(){
+function ask() {
     empty_item();
-    toggle_itemview();
-    state.mode="ADD";
-    render_item()
-}
-
-function toggle_itemview() {
-    document.getElementById("modalCliente").classList.toggle("active");
+    state.mode = "ADD";
+    render_item();
+    document.getElementById("id").removeAttribute("readonly"); // Hacer el campo ID editable en modo ADD
 }
 
 function empty_item() {
@@ -71,16 +70,22 @@ function empty_item() {
 }
 
 function render_item() {
-    document.getElementById("id").value = state.item.id;
-    document.getElementById("nombre").value = state.item.nombre;
-    document.getElementById("correo").value = state.item.correoElectronico;
-    document.getElementById("numTelefono").value = state.item.numeroTelefono;
-    document.getElementById("direccion").value = state.item.direccion;
+    const idField = document.getElementById("id");
+    idField.value = state.item.id || '';
+    if (state.mode === "EDIT") {
+        idField.setAttribute("readonly", true); // Hacer el campo ID de solo lectura en modo EDIT
+    } else {
+        idField.removeAttribute("readonly"); // Hacer el campo ID editable en modo ADD
+    }
+
+    document.getElementById("nombre").value = state.item.nombre || '';
+    document.getElementById("correo").value = state.item.correoElectronico || '';
+    document.getElementById("numTelefono").value = state.item.numeroTelefono || '';
+    document.getElementById("direccion").value = state.item.direccion || '';
 }
 
 function save() {
-
-    if (!loginstate.logged){
+    if (!loginstate.logged) {
         return;
     }
 
@@ -90,8 +95,6 @@ function save() {
 
     let method = state.mode === "EDIT" ? 'PUT' : 'POST';
     let url = state.mode === "EDIT" ? `${api}/${state.item.id}` : api;
-
-    console.log('Saving item:', state.item); // Depuración: Ver los datos antes de enviarlos
 
     let request = new Request(url, {
         method: method,
@@ -109,19 +112,21 @@ function save() {
                 console.error('Error details:', errorText);
                 throw new Error(errorMessage);
             }
-            toggle_itemview();
+            var modal = bootstrap.Modal.getInstance(document.getElementById('modalCliente'));
+            modal.hide();
             fetchAndList();
         } catch (error) {
             console.error('Fetch error:', error);
         }
     })();
 }
+
 function load_item() {
     state.item = {
-        id: parseInt(document.getElementById("id").value),
+        id: document.getElementById("id").value, // Asegúrate de capturar el valor del campo ID
         nombre: document.getElementById("nombre").value,
         correoElectronico: document.getElementById("correo").value,
-        numeroTelefono: parseInt(document.getElementById("numTelefono").value),
+        numeroTelefono: document.getElementById("numTelefono").value,
         direccion: document.getElementById("direccion").value,
         proveedorId: loginstate.user.id
     };
@@ -129,7 +134,9 @@ function load_item() {
 
 function validate_item() {
     var error = false;
-    document.querySelectorAll('input').forEach((i) => { i.classList.remove("invalid"); });
+    document.querySelectorAll('input').forEach((i) => {
+        i.classList.remove("invalid");
+    });
 
     if (state.item.nombre.length == 0) {
         document.getElementById("nombre").classList.add("invalid");
@@ -150,18 +157,21 @@ function validate_item() {
 
     return !error;
 }
+
 function edit(id) {
     let request = new Request(`${api}/${id}`, { method: 'GET', headers: {} });
     (async () => {
         const response = await fetch(request);
-        if (!response.ok) { errorMessage(response.status); return; }
+        if (!response.ok) {
+            errorMessage(response.status);
+            return;
+        }
         state.item = await response.json();
-        toggle_itemview();
         state.mode = "EDIT";
         render_item();
     })();
-
 }
+
 async function search() {
     const nombreBusqueda = document.getElementById("nombreBusqueda").value.trim();
     let request;
@@ -171,7 +181,10 @@ async function search() {
         request = new Request(api, { method: 'GET', headers: {} });
     } else {
         // Si hay un valor de búsqueda, busca por nombre
-        request = new Request(api + `/search?nombre=${encodeURIComponent(nombreBusqueda)}`, { method: 'GET', headers: {} });
+        request = new Request(api + `/search?nombre=${encodeURIComponent(nombreBusqueda)}`, {
+            method: 'GET',
+            headers: {}
+        });
     }
 
     try {
@@ -185,4 +198,8 @@ async function search() {
     } catch (error) {
         console.error('There was an error during the search operation:', error);
     }
+}
+
+function errorMessage(status) {
+    console.error(`Error: ${status}`);
 }

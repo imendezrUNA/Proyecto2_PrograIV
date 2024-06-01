@@ -5,7 +5,6 @@ import eif209.facturacioncsr.data.ProveedorRepository;
 import eif209.facturacioncsr.logic.Producto;
 import eif209.facturacioncsr.logic.Proveedor;
 import eif209.facturacioncsr.logic.dto.ProductoResponseDTO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -16,10 +15,13 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/productos")
 public class Productos {
-    @Autowired
-    private ProductoRepository productoRepository;
-    @Autowired
-    ProveedorRepository proveedorRepository;
+    private final ProductoRepository productoRepository;
+    private final ProveedorRepository proveedorRepository;
+
+    public Productos(ProductoRepository productoRepository, ProveedorRepository proveedorRepository) {
+        this.productoRepository = productoRepository;
+        this.proveedorRepository = proveedorRepository;
+    }
 
     @GetMapping
     public List<Producto> read() {

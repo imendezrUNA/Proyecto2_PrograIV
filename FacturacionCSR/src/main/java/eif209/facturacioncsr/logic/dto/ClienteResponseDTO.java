@@ -1,7 +1,5 @@
 package eif209.facturacioncsr.logic.dto;
 
-import eif209.facturacioncsr.logic.Proveedor;
-
 public class ClienteResponseDTO {
 
     private long id;

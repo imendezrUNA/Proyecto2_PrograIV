@@ -3,7 +3,7 @@ var api = backend + '/productos';
 
 var state = {
     list: [],
-    item: { id: "", nombre: "", descripcion: "", precio: "" },
+    item: {id: "", nombre: "", descripcion: "", precio: ""},
     mode: "" // ADD, EDIT
 };
 
@@ -24,10 +24,13 @@ async function loaded(event) {
 }
 
 function fetchAndList() {
-    const request = new Request(api, { method: 'GET', headers: {} });
+    const request = new Request(api, {method: 'GET', headers: {}});
     (async () => {
         const response = await fetch(request);
-        if (!response.ok) { errorMessage(response.status); return; }
+        if (!response.ok) {
+            errorMessage(response.status);
+            return;
+        }
         state.list = await response.json();
         render_list();
     })();
@@ -46,37 +49,36 @@ function render_list_item(listado, item) {
                     <td>${item.descripcion}</td>
                     <td>${item.precio}</td>
                     <td class='text-center'>
-                        <button class='btn btn-warning btn-sm edit' data-id='${item.id}'>Editar</button>
+                        <button class='btn btn-warning btn-sm edit' data-id='${item.id}' data-bs-toggle="modal" data-bs-target="#modalProducto">Editar</button>
                     </td>`;
-    tr.querySelector(".edit").addEventListener("click", () => { edit(item.id); });
+    tr.querySelector(".edit").addEventListener("click", () => {
+        edit(item.id);
+    });
     listado.append(tr);
 }
 
 function ask() {
     empty_item();
-    toggle_itemview();
     state.mode = "ADD";
     render_item();
 }
 
-function toggle_itemview() {
-    document.getElementById("modalProducto").classList.toggle("active");
-}
-
 function empty_item() {
-    state.item = { id: "", nombre: "", descripcion: "", precio: "" };
+    state.item = {id: "", nombre: "", descripcion: "", precio: ""};
 }
 
 function render_item() {
-    document.getElementById("id").value = state.item.id;
+    const idField = document.getElementById("id");
+    idField.value = state.item.id;
+    idField.readOnly = state.mode === "EDIT";
+
     document.getElementById("nombre").value = state.item.nombre;
     document.getElementById("descripcion").value = state.item.descripcion;
     document.getElementById("precio").value = state.item.precio;
 }
 
 function save() {
-
-    if (!loginstate.logged){
+    if (!loginstate.logged) {
         return;
     }
 
@@ -87,11 +89,9 @@ function save() {
     let method = state.mode === "EDIT" ? 'PUT' : 'POST';
     let url = state.mode === "EDIT" ? `${api}/${state.item.id}` : api;
 
-    console.log('Saving item:', state.item); // Depuración: Ver los datos antes de enviarlos
-
     let request = new Request(url, {
         method: method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(state.item)
     });
 
@@ -105,7 +105,8 @@ function save() {
                 console.error('Error details:', errorText);
                 throw new Error(errorMessage);
             }
-            toggle_itemview();
+            var modal = bootstrap.Modal.getInstance(document.getElementById('modalProducto'));
+            modal.hide();
             fetchAndList();
         } catch (error) {
             console.error('Fetch error:', error);
@@ -125,7 +126,9 @@ function load_item() {
 
 function validate_item() {
     var error = false;
-    document.querySelectorAll('input').forEach((i) => { i.classList.remove("invalid"); });
+    document.querySelectorAll('input').forEach((i) => {
+        i.classList.remove("invalid");
+    });
 
     if (state.item.nombre.length == 0) {
         document.getElementById("nombre").classList.add("invalid");
@@ -144,12 +147,14 @@ function validate_item() {
 }
 
 function edit(id) {
-    let request = new Request(`${api}/${id}`, { method: 'GET', headers: {} });
+    let request = new Request(`${api}/${id}`, {method: 'GET', headers: {}});
     (async () => {
         const response = await fetch(request);
-        if (!response.ok) { errorMessage(response.status); return; }
+        if (!response.ok) {
+            errorMessage(response.status);
+            return;
+        }
         state.item = await response.json();
-        toggle_itemview();
         state.mode = "EDIT";
         render_item();
     })();
@@ -161,10 +166,13 @@ async function search() {
 
     if (nombreBusqueda === "") {
         // Si el campo de búsqueda está vacío, devuelve la lista completa
-        request = new Request(api, { method: 'GET', headers: {} });
+        request = new Request(api, {method: 'GET', headers: {}});
     } else {
         // Si hay un valor de búsqueda, busca por nombre
-        request = new Request(api + `/search?nombre=${encodeURIComponent(nombreBusqueda)}`, { method: 'GET', headers: {} });
+        request = new Request(api + `/search?nombre=${encodeURIComponent(nombreBusqueda)}`, {
+            method: 'GET',
+            headers: {}
+        });
     }
 
     try {
